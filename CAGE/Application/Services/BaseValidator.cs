@@ -12,12 +12,12 @@ namespace CAGE.Application.Services
 
     {
 
-        #region - - - - - - IUseCaseInputPortValidator Implementation - - - - - -
+        #region - - - - - - Methods - - - - - -
 
         Task<InputPortValidationResult> IUseCaseInputPortValidator<TUseCaseInputPort, InputPortValidationResult>.ValidateAsync(TUseCaseInputPort inputPort, CancellationToken cancellationToken)
             => Task.FromResult(new InputPortValidationResult(this.Validate(inputPort)));
 
-        #endregion IUseCaseInputPortValidator Implementation
+        #endregion Methods
     }
 
 }
