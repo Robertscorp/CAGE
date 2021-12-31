@@ -20,9 +20,9 @@ namespace CAGE.Tests.Unit.Application.UseCases.CreateGame
         private readonly Mock<IGameLogic> m_MockGameLogic = new();
         private readonly Mock<ICreateGameOutputPort> m_MockOutputPort = new();
 
-        private GameDto? m_PresentedDto;
         private readonly CreateGameInputPort m_InputPort = new() { Players = new[] { new NewPlayerDto("player1") } };
         private readonly IUseCaseInteractor<CreateGameInputPort, ICreateGameOutputPort> m_Interactor;
+        private GameDto? m_PresentedDto;
 
         #endregion Fields
 
