@@ -8,9 +8,12 @@ var _Players = new[] { new Player { Name = "Player 1" }, new Player { Name = "Pl
 var _Presenter = new Presenter();
 var _Strategy = default(IPhaseEngineStrategy<Phase, Player>);// 
 
-Console.WriteLine("Pick a Phase Engine Strategy: ");
-Console.WriteLine(" [1] Sequential Ranked - Goes through each Phase and each Player in a Phase one at a time.");
-Console.WriteLine(" [2] Simultaneous - Goes through each Phase one at a time, but gives all Players in a Phase a turn at the same time.");
+Console.WriteLine("All Phase Engine Strategies will go through each Phase sequentially.");
+Console.WriteLine();
+Console.WriteLine("Pick a Phase Engine Strategy:");
+Console.WriteLine(" [1] Ranked - Each Player is given their turn sequentially, in Player order.");
+Console.WriteLine(" [2] Round Robin - Each Player is given their turn sequentially, starting in Player order. Each Round the first Player will move to the next Player.");
+Console.WriteLine(" [3] Simultaneous - All Players in a Phase take their turn at the same time.");
 Console.WriteLine(" [Other] Exit.");
 
 if (!int.TryParse(Console.ReadLine(), out var _Option))
@@ -18,8 +21,9 @@ if (!int.TryParse(Console.ReadLine(), out var _Option))
 
 switch (_Option)
 {
-    case 1: _Strategy = new SequentialRankedPhaseEngineStrategy<Phase, Player>(_Phases, _Players); break;
-    case 2: _Strategy = new SimultaneousPhaseEngineStrategy<Phase, Player>(_Phases, _Players); break;
+    case 1: _Strategy = new RankedPlayerPhaseEngineStrategy<Phase, Player>(_Phases, _Players); break;
+    case 2: _Strategy = new RoundRobinPlayerPhaseEngineStrategy<Phase, Player>(_Phases, _Players); break;
+    case 3: _Strategy = new SimultaneousPlayerPhaseEngineStrategy<Phase, Player>(_Phases, _Players); break;
 }
 
 if (_Strategy == null)
