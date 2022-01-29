@@ -13,7 +13,7 @@ Console.WriteLine();
 Console.WriteLine("Pick a Phase Engine Strategy:");
 Console.WriteLine(" [1] Ranked - Each Player is given their turn sequentially, in Player order.");
 Console.WriteLine(" [2] Round Robin - Each Player is given their turn sequentially, starting in Player order. Each Round the first Player will move to the next Player.");
-Console.WriteLine(" [3] Random - Each Player is given their turn randomly.");
+Console.WriteLine(" [3] Random - Each Player is given their turn sequentially, in a random order.");
 Console.WriteLine(" [4] Simultaneous - All Players in a Phase take their turn at the same time.");
 Console.WriteLine(" [Other] Exit.");
 
