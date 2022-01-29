@@ -20,10 +20,11 @@ for (var _I = 0; _I < 5; _I++)
     await _InputPort.ResumeAsync(default);
 }
 
-_ = Task.Delay(10500).ContinueWith(task =>
+var _WaitAndStopAsync = Task.Delay(10500).ContinueWith(task =>
 {
     Console.WriteLine("Telling the Phase Engine to stop...");
     return _InputPort.StopAsync(default);
 });
 
 await _StartAsync;
+await _WaitAndStopAsync;
