@@ -22,16 +22,22 @@
             => WriteLineAsync("Phase Engine Stopped.");
 
         Task IPhaseEngineOutputPort<Phase, Player>.NonPlayerPhaseAsync(Phase phase, int? round, CancellationToken cancellationToken)
-            => WriteLineAsync($"Round: {round}, {phase.Name} (Non-Player).", 1000);
+            => WriteLineAsync($"Round: {round}, {phase.Name} (Non-Player).", Random.Shared.Next(1000, 2500));
 
         Task IPhaseEngineOutputPort<Phase, Player>.PlayerPhaseAsync(Phase phase, Player player, int? round, CancellationToken cancellationToken)
-            => WriteLineAsync($"Round: {round}, {phase.Name} - {player.Name}'s Turn.", 1000);
+            => WriteLineAsync($"Round: {round}, {phase.Name} - {player.Name}'s Turn.", Random.Shared.Next(1000, 2500));
 
-        private static Task WriteLineAsync(string message, int delay = 0)
+        private static async Task WriteLineAsync(string message, int delay = 0)
         {
             Console.WriteLine(message);
-            return delay == 0 ? Task.CompletedTask : Task.Delay(delay);
+
+            if (delay > 0)
+            {
+                await Task.Delay(delay);
+                Console.WriteLine($"{message} [Completed after {delay}ms]");
+            }
         }
+
         #endregion Methods
 
     }
