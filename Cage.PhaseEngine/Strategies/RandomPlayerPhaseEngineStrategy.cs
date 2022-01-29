@@ -33,7 +33,7 @@
             this.m_FinishedPlayers.Add(player);
             this.m_CurrentPlayer = null;
 
-            if (this.m_FinishedPlayers.Count == this.Players.Length)
+            if (Equals(this.m_FinishedPlayers.Count, this.Players.Length))
             {
                 this.m_FinishedPlayers.Clear();
                 this.IncrementPhase();
