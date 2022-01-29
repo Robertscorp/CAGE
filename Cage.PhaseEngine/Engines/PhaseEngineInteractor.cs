@@ -28,7 +28,7 @@ namespace Cage.PhaseEngine.Engines
         {
             var _Strategy = this.m_PhaseEngineStrategy;
 
-            activePhases = _Strategy == null
+            activePhases = Equals(_Strategy, null)
                             ? Array.Empty<(TPhase, TPlayer?, int?)>()
                             : _Strategy.GetActivePhases();
 
@@ -40,10 +40,10 @@ namespace Cage.PhaseEngine.Engines
 
         Task IPhaseEngineInputPort<TPhase, TPlayer>.PauseAsync(CancellationToken cancellationToken)
         {
-            if (this.m_WaitHandle == null)
+            if (Equals(this.m_WaitHandle, null))
             {
                 var _WaitHandle = new ManualResetEvent(false);
-                if (Interlocked.CompareExchange(ref this.m_WaitHandle, _WaitHandle, null) == null)
+                if (Equals(Interlocked.CompareExchange(ref this.m_WaitHandle, _WaitHandle, null), null))
                 {
                     this.m_PauseAsync = _WaitHandle.WaitAsync();
                     return this.m_OutputPort.EnginePausedAsync(cancellationToken);
@@ -58,7 +58,7 @@ namespace Cage.PhaseEngine.Engines
         Task IPhaseEngineInputPort<TPhase, TPlayer>.ResumeAsync(CancellationToken cancellationToken)
         {
             var _WaitHandle = Interlocked.Exchange(ref this.m_WaitHandle, null);
-            if (_WaitHandle != null)
+            if (!Equals(_WaitHandle, null))
             {
                 this.m_PauseAsync = Task.CompletedTask;
 
@@ -100,7 +100,7 @@ namespace Cage.PhaseEngine.Engines
                                                     task =>
                                                     {
                                                         var _Strategy = this.m_PhaseEngineStrategy;
-                                                        if (_Strategy != null)
+                                                        if (!Equals(_Strategy, null))
                                                             _ = _Strategy.TryEndPhase(ap.Phase, ap.Player);
                                                     },
                                                     TaskContinuationOptions.OnlyOnRanToCompletion);
