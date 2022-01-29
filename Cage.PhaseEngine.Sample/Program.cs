@@ -8,8 +8,9 @@ var _Players = new[] { new Player { Name = "Player 1" }, new Player { Name = "Pl
 var _Presenter = new Presenter();
 var _Strategy = default(IPhaseEngineStrategy<Phase, Player>);// 
 
-Console.WriteLine("All of the Phase Engine Strategies will go through each Phase sequentially ");
-Console.WriteLine("Pick a Phase Engine Strategy: ");
+Console.WriteLine("All of Phase Engine Strategies will go through each Phase sequentially.");
+Console.WriteLine();
+Console.WriteLine("Pick a Phase Engine Strategy:");
 Console.WriteLine(" [1] Ranked - Each Player is given their turn sequentially, in player order.");
 Console.WriteLine(" [2] Round Robin - Each Player is given their turn sequentially, starting in player order, but each round the second player from the previous round becomes the first player.");
 Console.WriteLine(" [3] Simultaneous - Goes through each Phase one at a time, but gives all Players in a Phase a turn at the same time.");
