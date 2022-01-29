@@ -81,8 +81,6 @@ namespace Cage.PhaseEngine.Engines
                 return;
             }
 
-            this.m_PhaseEngineStrategy = phaseEngineStrategy;
-
             await this.m_OutputPort.EngineStartedAsync(cancellationToken);
 
             while (this.CanContinue(out var _ActivePhases))
