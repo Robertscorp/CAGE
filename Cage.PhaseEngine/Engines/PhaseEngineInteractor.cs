@@ -77,11 +77,11 @@ namespace Cage.PhaseEngine.Engines
         {
             if (!Equals(Interlocked.CompareExchange(ref this.m_PhaseEngineStrategy, phaseEngineStrategy, null), null))
             {
-                await this.m_OutputPort.EngineAlreadyRunningAsync(cancellationToken);
+                await this.m_OutputPort.EngineAlreadyRunningAsync(cancellationToken).ConfigureAwait(false);
                 return;
             }
 
-            await this.m_OutputPort.EngineStartedAsync(cancellationToken);
+            await this.m_OutputPort.EngineStartedAsync(cancellationToken).ConfigureAwait(false);
 
             while (this.CanContinue(out var _ActivePhases))
             {
@@ -110,7 +110,7 @@ namespace Cage.PhaseEngine.Engines
 
             this.m_PhaseEngineStrategy = null;
 
-            await this.m_OutputPort.EngineStoppedAsync(cancellationToken);
+            await this.m_OutputPort.EngineStoppedAsync(cancellationToken).ConfigureAwait(false);
         }
 
         Task IPhaseEngineInputPort<TPhase, TPlayer>.StopAsync(CancellationToken cancellationToken)
