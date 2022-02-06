@@ -106,7 +106,6 @@
             return Task.CompletedTask;
         }
 
-
         #endregion Methods
 
     }
