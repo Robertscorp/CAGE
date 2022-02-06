@@ -103,7 +103,6 @@
                 Console.WriteLine($"{_UnitName} ({_PlayerName}) - {_UnitProgress} - {_Status} {_TargetName} {_TurnArrow}");
             }
 
-
             return Task.CompletedTask;
         }
 
