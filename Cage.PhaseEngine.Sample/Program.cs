@@ -5,7 +5,7 @@ using Cage.PhaseEngine.Strategies;
 
 var _Phases = new[] { Phase.Phase1, Phase.Phase2, Phase.Phase3 };
 var _Players = new[] { new Player(1, "Player 1"), new Player(5, "Player 2"), new Player(10, "Player 3") };
-var _Presenter = new Presenter();
+var _Presenter = new Presenter(_Phases, _Players);
 var _Strategy = default(IPhaseEngineStrategy<Phase, Player>);
 
 Console.WriteLine("All Phase Engine Strategies will go through each Phase sequentially.");
@@ -45,11 +45,7 @@ var _StartAsync = _InputPort.StartAsync(_Strategy, default);
 //    await _InputPort.ResumeAsync(default);
 //}
 
-var _WaitAndStopAsync = Task.Delay(30000).ContinueWith(task =>
-{
-    Console.WriteLine("Telling the Phase Engine to stop...");
-    return _InputPort.StopAsync(default);
-});
+var _WaitAndStopAsync = Task.Delay(30000).ContinueWith(task => _InputPort.StopAsync(default));
 
 await _StartAsync;
 await _WaitAndStopAsync;
