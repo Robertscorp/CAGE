@@ -14,13 +14,10 @@
 
             var _ClearAndTakeTurnAgain = false;
 
-            if (!int.TryParse(Console.ReadLine(), out var _Action) || _Action < 1 || _Action > 2)
+            if (!int.TryParse(Console.ReadLine(), out var _Action))
                 _ClearAndTakeTurnAgain = true;
 
-            else if (_Action == 2)
-                unit.Defend();
-
-            else
+            else if (_Action == 1)
             {
                 Console.WriteLine($"Who should {unit.Name} attack? (Unit number) ");
                 if (!int.TryParse(Console.ReadLine(), out var _TargetNumber))
@@ -33,6 +30,12 @@
                         _ClearAndTakeTurnAgain = true;
                 }
             }
+
+            else if (_Action == 2)
+                unit.Defend();
+
+            else
+                _ClearAndTakeTurnAgain = true;
 
             Console.SetCursorPosition(Console.CursorLeft, totalUnitCount + 1);
             Console.WriteLine(new string(' ', 62));
