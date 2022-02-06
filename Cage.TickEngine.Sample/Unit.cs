@@ -23,6 +23,8 @@
 
         #region - - - - - - Properties - - - - - -
 
+        public string Name { get; }
+
         public Phase Phase
         {
             get => this.m_Phase!;
@@ -41,8 +43,6 @@
         public int TicksElapsed { get; private set; }
 
         public int TicksRequired { get; private set; }
-
-        public string Name { get; }
 
         #endregion Properties
 
