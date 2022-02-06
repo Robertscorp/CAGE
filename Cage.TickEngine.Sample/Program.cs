@@ -1,6 +1,7 @@
 ﻿using Cage.TickEngine;
 using Cage.TickEngine.Engines;
 using Cage.TickEngine.Sample;
+using Cage.TickEngine.Sample.PlayerTurns;
 
 Console.WriteLine("Tick Engine Sample - How many Players would you like for the battle?");
 
@@ -15,7 +16,12 @@ foreach (var _PlayerNumber in Enumerable.Range(1, _PlayerCount))
     if (!int.TryParse(Console.ReadLine(), out var _UnitCount))
         return;
 
-    var _Player = new Player($"Player {_PlayerNumber}");
+    Console.WriteLine("Is this a Human player? ('y' for yes)");
+    var _IsHuman = Equals(Console.ReadLine()?.ToLower().FirstOrDefault(), 'y');
+
+    var _Player = new Player(
+                        $"Player {_PlayerNumber}",
+                        _IsHuman ? new HumanPlayerTurnStrategy() : new AiPlayerTurnStrategy());
 
     _Units.AddRange(
         Enumerable

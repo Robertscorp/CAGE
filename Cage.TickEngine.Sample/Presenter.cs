@@ -63,8 +63,9 @@
         Task ITickEngineOutputPort<Player, Unit>.UnitStartPhaseAsync(Unit unit, CancellationToken cancellationToken)
             => this.UpdateUnit(unit);
 
-        Task ITickEngineOutputPort<Player, Unit>.UnitTurnAsync(Unit unit, CancellationToken cancellationToken)
+        async Task ITickEngineOutputPort<Player, Unit>.UnitTurnAsync(Unit unit, CancellationToken cancellationToken)
         {
+            await this.UpdateUnit(unit, isHavingTurn: true);
 
             if (Equals(unit.Phase, Phase.BleedingPhase))
                 unit.Defeat();
@@ -72,36 +73,34 @@
             else if (Equals(unit.Phase, Phase.TargetPhase))
                 _ = unit.Attack();
 
-            else if (Equals(Random.Shared.Next(0, 2), 1))
-            {
-                var _EnemyUnits = this.m_Units.Keys.Where(u => !Equals(u.Player, unit.Player) && u.Phase.IsUnitAttackable).ToArray();
-
-                _ = unit.TargetUnit(_EnemyUnits[Random.Shared.Next(0, _EnemyUnits.Length)]);
-            }
             else
-                unit.Defend();
+                unit.Player.PlayerTurnStrategy.TakeTurn(
+                    unit,
+                    this.m_Units.Keys.Where(u => !Equals(u.Player, unit.Player) && u.Phase.IsUnitAttackable),
+                    this.m_Units.Count);
 
-            return Task.CompletedTask;
+            await this.UpdateUnit(unit, isHavingTurn: false);
         }
 
-        private Task UpdateUnit(Unit unit)
+        private Task UpdateUnit(Unit unit, bool isHavingTurn = false)
         {
             var _Index = this.m_Units[unit];
 
             Console.SetCursorPosition(Console.CursorLeft, _Index);
 
             if (unit.Phase.IsUnitDefeated)
-                Console.WriteLine(new string('-', 33).PadRight(54));
+                Console.WriteLine(new string('-', 33).PadRight(60));
 
             else
             {
                 var _PlayerName = unit.Player.Name.PadRight(9);
                 var _Status = unit.Phase.Name.PadRight(12);
-                var _TargetName = unit.Target?.Name ?? new string(' ', 7);
+                var _TargetName = unit.Target?.Name.PadRight(7) ?? new string(' ', 7);
+                var _TurnArrow = isHavingTurn ? "<----" : new string(' ', 5);
                 var _UnitName = unit.Name.PadRight(7);
                 var _UnitProgress = new string('█', Math.Min(9, (unit.TicksElapsed * 10) / unit.TicksRequired)).PadRight(9, '_');
 
-                Console.WriteLine($"{_UnitName} ({_PlayerName}) - {_UnitProgress} - {_Status} {_TargetName}");
+                Console.WriteLine($"{_UnitName} ({_PlayerName}) - {_UnitProgress} - {_Status} {_TargetName} {_TurnArrow}");
             }
 
 
