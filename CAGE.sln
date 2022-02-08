@@ -11,9 +11,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cage.PhaseEngine", "Cage.Ph
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cage.PhaseEngine.Sample", "Cage.PhaseEngine.Sample\Cage.PhaseEngine.Sample.csproj", "{D556F58A-9B0D-497B-A894-85A3819EDBE4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cage.TickEngine", "Cage.TickEngine\Cage.TickEngine.csproj", "{1A1EA6AF-D0DF-4025-B8CE-9EC23EE27728}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cage.TickEngine", "Cage.TickEngine\Cage.TickEngine.csproj", "{1A1EA6AF-D0DF-4025-B8CE-9EC23EE27728}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cage.TickEngine.Sample", "Cage.TickEngine.Sample\Cage.TickEngine.Sample.csproj", "{D52D24DE-BD71-4DAF-91C8-92AFDA0F5570}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cage.TickEngine.Sample", "Cage.TickEngine.Sample\Cage.TickEngine.Sample.csproj", "{D52D24DE-BD71-4DAF-91C8-92AFDA0F5570}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cage.CombatEngine", "Cage.CombatEngine\Cage.CombatEngine.csproj", "{86344BCE-E2AB-4903-AD7D-69E41BC38B01}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -45,6 +47,10 @@ Global
 		{D52D24DE-BD71-4DAF-91C8-92AFDA0F5570}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D52D24DE-BD71-4DAF-91C8-92AFDA0F5570}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D52D24DE-BD71-4DAF-91C8-92AFDA0F5570}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86344BCE-E2AB-4903-AD7D-69E41BC38B01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86344BCE-E2AB-4903-AD7D-69E41BC38B01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86344BCE-E2AB-4903-AD7D-69E41BC38B01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86344BCE-E2AB-4903-AD7D-69E41BC38B01}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
