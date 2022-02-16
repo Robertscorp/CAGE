@@ -81,8 +81,6 @@ namespace Cage.CombatEngine
 
         public decimal AmountToRestore { get; set; }
 
-        public bool ShouldIgnoreRestoreModifier { get; set; }
-
         #endregion Properties
 
     }
