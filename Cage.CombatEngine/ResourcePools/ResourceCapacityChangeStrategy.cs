@@ -1,7 +1,7 @@
 ﻿namespace Cage.CombatEngine.ResourcePools
 {
 
-    public delegate decimal ResourceCapacityChangeStrategy(int oldCapacity, int oldRemainingResource, int newCapacity);
+    public delegate decimal ResourceCapacityChangeStrategy(decimal oldCapacity, decimal oldRemainingResource, decimal newCapacity);
 
     public static class ResourceCapacityChangeStrategies
     {
@@ -18,23 +18,23 @@
 
         #region - - - - - - Methods - - - - - -
 
-        private static decimal ChangeByCapacity(int oldCapacity, int oldRemainingResource, int newCapacity)
+        private static decimal ChangeByCapacity(decimal oldCapacity, decimal oldRemainingResource, decimal newCapacity)
             => oldRemainingResource - oldCapacity + newCapacity;
 
-        private static decimal DecreaseOnly(int oldCapacity, int oldRemainingResource, int newCapacity)
+        private static decimal DecreaseOnly(decimal oldCapacity, decimal oldRemainingResource, decimal newCapacity)
             => newCapacity >= oldCapacity
                 ? oldRemainingResource
                 : ChangeByCapacity(oldCapacity, oldRemainingResource, newCapacity);
 
-        private static decimal IncreaseByCapacity(int oldCapacity, int oldRemainingResource, int newCapacity)
+        private static decimal IncreaseByCapacity(decimal oldCapacity, decimal oldRemainingResource, decimal newCapacity)
             => oldCapacity >= newCapacity
                 ? Math.Min(newCapacity, oldRemainingResource)
                 : ChangeByCapacity(oldCapacity, oldRemainingResource, newCapacity);
 
-        private static decimal MaintainPercentage(int oldCapacity, int oldRemainingResource, int newCapacity)
-            => (decimal)newCapacity * oldRemainingResource / oldCapacity;
+        private static decimal MaintainPercentage(decimal oldCapacity, decimal oldRemainingResource, decimal newCapacity)
+            => newCapacity / oldCapacity * oldRemainingResource;
 
-        private static decimal RetainRemaining(int oldCapacity, int oldRemainingResource, int newCapacity)
+        private static decimal RetainRemaining(decimal oldCapacity, decimal oldRemainingResource, decimal newCapacity)
             => Math.Min(oldRemainingResource, newCapacity);
 
         #endregion Methods

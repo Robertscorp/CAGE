@@ -11,67 +11,67 @@ namespace Cage.CombatEngine.Tests.Unit.ResourcePools
         #region - - - - - - ChangeResourceByCapacity Tests - - - - - -
 
         [Theory]
-        [InlineData(100, 100, 25, 25)]
-        [InlineData(100, 100, 150, 150)]
-        [InlineData(100, 100, -10, -10)]
-        [InlineData(100, 50, 25, -25)]
-        [InlineData(100, 50, 150, 100)]
-        [InlineData(100, 50, -25, -75)]
+        [InlineData(100.0D, 100.0D, 25.0D, 25.0D)]
+        [InlineData(100.0D, 100.0D, 150.0D, 150.0D)]
+        [InlineData(100.0D, 100.0D, -10.0D, -10.0D)]
+        [InlineData(100.0D, 50.0D, 25.0D, -25.0D)]
+        [InlineData(100.0D, 50.0D, 150.0D, 100.0D)]
+        [InlineData(100.0D, 50.0D, -25.0D, -75.0D)]
         public void ChangeResourceByCapacity_VariousCapacityChanges_RemainingResourceFollowsCapacityChange(
-            int oldCapacity, int oldRemainingResource, int newCapacity, int expectedRemainingResource)
+            double oldCapacity, double oldRemainingResource, double newCapacity, double expectedRemainingResource)
             => ResourceCapacityChangeStrategies
-                .ChangeResourceByCapacity(oldCapacity, oldRemainingResource, newCapacity)
-                .Should().Be(expectedRemainingResource);
+                .ChangeResourceByCapacity((decimal)oldCapacity, (decimal)oldRemainingResource, (decimal)newCapacity)
+                .Should().Be((decimal)expectedRemainingResource);
 
         #endregion ChangeResourceByCapacity Tests
 
         #region - - - - - - DecreaseResourceOnly Tests - - - - - -
 
         [Theory]
-        [InlineData(100, 100, 25, 25)]
-        [InlineData(100, 100, 150, 100)]
-        [InlineData(100, 100, -10, -10)]
-        [InlineData(100, 50, 25, -25)]
-        [InlineData(100, 50, 150, 50)]
-        [InlineData(100, 50, -25, -75)]
+        [InlineData(100.0D, 100.0D, 25.0D, 25.0D)]
+        [InlineData(100.0D, 100.0D, 150.0D, 100.0D)]
+        [InlineData(100.0D, 100.0D, -10.0D, -10.0D)]
+        [InlineData(100.0D, 50.0D, 25.0D, -25.0D)]
+        [InlineData(100.0D, 50.0D, 150.0D, 50.0D)]
+        [InlineData(100.0D, 50.0D, -25.0D, -75.0D)]
         public void DecreaseResourceOnly_VariousCapacityChanges_RemainingResourceFollowsCapacityChange(
-            int oldCapacity, int oldRemainingResource, int newCapacity, int expectedRemainingResource)
+            double oldCapacity, double oldRemainingResource, double newCapacity, double expectedRemainingResource)
             => ResourceCapacityChangeStrategies
-                .DecreaseResourceOnly(oldCapacity, oldRemainingResource, newCapacity)
-                .Should().Be(expectedRemainingResource);
+                .DecreaseResourceOnly((decimal)oldCapacity, (decimal)oldRemainingResource, (decimal)newCapacity)
+                .Should().Be((decimal)expectedRemainingResource);
 
         #endregion DecreaseResourceOnly Tests
 
         #region - - - - - - IncreaseResourceByCapacity Tests - - - - - -
 
         [Theory]
-        [InlineData(100, 100, 25, 25)]
-        [InlineData(100, 100, 150, 150)]
-        [InlineData(100, 100, -10, -10)]
-        [InlineData(100, 50, 25, 25)]
-        [InlineData(100, 50, 150, 100)]
-        [InlineData(100, 50, -25, -25)]
+        [InlineData(100.0D, 100.0D, 25.0D, 25.0D)]
+        [InlineData(100.0D, 100.0D, 150.0D, 150.0D)]
+        [InlineData(100.0D, 100.0D, -10.0D, -10.0D)]
+        [InlineData(100.0D, 50.0D, 25.0D, 25.0D)]
+        [InlineData(100.0D, 50.0D, 150.0D, 100.0D)]
+        [InlineData(100.0D, 50.0D, -25.0D, -25.0D)]
         public void IncreaseResourceByCapacity_VariousCapacityChanges_RemainingResourceFollowsCapacityChange(
-            int oldCapacity, int oldRemainingResource, int newCapacity, int expectedRemainingResource)
+            double oldCapacity, double oldRemainingResource, double newCapacity, double expectedRemainingResource)
             => ResourceCapacityChangeStrategies
-                .IncreaseResourceByCapacity(oldCapacity, oldRemainingResource, newCapacity)
-                .Should().Be(expectedRemainingResource);
+                .IncreaseResourceByCapacity((decimal)oldCapacity, (decimal)oldRemainingResource, (decimal)newCapacity)
+                .Should().Be((decimal)expectedRemainingResource);
 
         #endregion IncreaseResourceByCapacity Tests
 
         #region - - - - - - MaintainResourcePercentage Tests - - - - - -
 
         [Theory]
-        [InlineData(100, 100, 25, 25)]
-        [InlineData(100, 100, 150, 150)]
-        [InlineData(100, 100, -10, -10)]
-        [InlineData(100, 75, 150, 112.5)]
-        [InlineData(100, 75, 50, 37.5)]
-        [InlineData(100, 75, -25, -18.75)]
+        [InlineData(100.0D, 100.0D, 25.0D, 25.0D)]
+        [InlineData(100.0D, 100.0D, 150.0D, 150.0D)]
+        [InlineData(100.0D, 100.0D, -10.0D, -10.0D)]
+        [InlineData(100.0D, 75.0D, 150.0D, 112.5D)]
+        [InlineData(100.0D, 75.0D, 50.0D, 37.5D)]
+        [InlineData(100.0D, 75.0D, -25.0D, -18.75D)]
         public void MaintainResourcePercentage_VariousCapacityChanges_RemainingResourceFollowsCapacityChange(
-            int oldCapacity, int oldRemainingResource, int newCapacity, double expectedRemainingResource)
+            int oldCapacity, double oldRemainingResource, double newCapacity, double expectedRemainingResource)
             => ResourceCapacityChangeStrategies
-                .MaintainResourcePercentage(oldCapacity, oldRemainingResource, newCapacity)
+                .MaintainResourcePercentage((decimal)oldCapacity, (decimal)oldRemainingResource, (decimal)newCapacity)
                 .Should().Be((decimal)expectedRemainingResource);
 
         #endregion MaintainResourcePercentage Tests
@@ -79,17 +79,17 @@ namespace Cage.CombatEngine.Tests.Unit.ResourcePools
         #region - - - - - - RetainRemainingResource Tests - - - - - -
 
         [Theory]
-        [InlineData(100, 100, 25, 25)]
-        [InlineData(100, 100, 150, 100)]
-        [InlineData(100, 100, -10, -10)]
-        [InlineData(100, 75, 150, 75)]
-        [InlineData(100, 75, 50, 50)]
-        [InlineData(100, 75, -25, -25)]
+        [InlineData(100.0D, 100.0D, 25.0D, 25.0D)]
+        [InlineData(100.0D, 100.0D, 150.0D, 100.0D)]
+        [InlineData(100.0D, 100.0D, -10.0D, -10.0D)]
+        [InlineData(100.0D, 75.0D, 150.0D, 75.0D)]
+        [InlineData(100.0D, 75.0D, 50.0D, 50.0D)]
+        [InlineData(100.0D, 75.0D, -25.0D, -25.0D)]
         public void RetainRemainingResource_VariousCapacityChanges_RemainingResourceFollowsCapacityChange(
-            int oldCapacity, int oldRemainingResource, int newCapacity, int expectedRemainingResource)
+            double oldCapacity, double oldRemainingResource, double newCapacity, double expectedRemainingResource)
             => ResourceCapacityChangeStrategies
-                .RetainRemainingResource(oldCapacity, oldRemainingResource, newCapacity)
-                .Should().Be(expectedRemainingResource);
+                .RetainRemainingResource((decimal)oldCapacity, (decimal)oldRemainingResource, (decimal)newCapacity)
+                .Should().Be((decimal)expectedRemainingResource);
 
         #endregion RetainRemainingResource Tests
 
