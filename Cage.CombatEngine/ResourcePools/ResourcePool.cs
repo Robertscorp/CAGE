@@ -1,0 +1,146 @@
+﻿using Cage.CombatEngine.Common;
+
+namespace Cage.CombatEngine.ResourcePools
+{
+
+    public delegate Task ResourcePoolExhaustedAsync(CancellationToken cancellationToken);
+
+    public class ResourcePool : IResourcePoolInputPort
+    {
+
+        #region - - - - - - Fields - - - - - -
+
+        private readonly ResourceID m_ID;
+        private readonly decimal m_MinimumCapacity;
+        private readonly IResourcePoolOutputPort m_OutputPort;
+        private readonly ResourcePoolExhaustedAsync m_ResourcePoolExhaustedAsync;
+
+        private decimal m_Capacity;
+        private decimal m_CapacityModifier = 1.0M;
+        private decimal m_MissingResource;
+
+        #endregion Fields
+
+        #region - - - - - - Constructors - - - - - -
+
+        public ResourcePool(
+            ResourceID id,
+            decimal capacity,
+            decimal initialResource,
+            decimal minimumCapacity,
+            IResourcePoolOutputPort outputPort,
+            ResourcePoolExhaustedAsync resourcePoolExhaustedAsync)
+        {
+            this.m_Capacity = capacity;
+            this.m_ID = id;
+            this.m_MinimumCapacity = minimumCapacity;
+            this.m_MissingResource = capacity - initialResource;
+            this.m_OutputPort = outputPort;
+            this.m_ResourcePoolExhaustedAsync = resourcePoolExhaustedAsync;
+        }
+
+        #endregion Constructors
+
+        #region - - - - - - Properties - - - - - -
+
+        ResourceID IResourcePoolInputPort.ResourceID => this.m_ID;
+
+        #endregion Properties
+
+        #region - - - - - - Methods - - - - - -
+
+        private decimal GetBaseCapacity()
+            => Math.Max(this.m_MinimumCapacity, this.m_Capacity);
+
+        private decimal GetMaxCapacity()
+            => Math.Max(this.m_MinimumCapacity, this.GetBaseCapacity() * this.m_CapacityModifier);
+
+        private decimal GetRemainingResource()
+            => this.GetMaxCapacity() - this.m_MissingResource;
+
+        private ResourceID GetResourceID()
+            => ((IResourcePoolInputPort)this).ResourceID;
+
+        Task IResourcePoolInputPort.ChangeBaseCapacityAsync(ChangeBaseCapacityRequest request, CancellationToken cancellationToken)
+            => this.UpdateResourceCapacityAsync(
+                request.BaseCapacityChange,
+                modifierChange: 0.0M,
+                request.CapacityChangeStrategy,
+                request.CapcityRoundingStrategy,
+                cancellationToken);
+
+        Task IResourcePoolInputPort.ChangeCapacityModifierAsync(ChangeCapacityModifierRequest request, CancellationToken cancellationToken)
+            => this.UpdateResourceCapacityAsync(
+                baseChange: 0.0M,
+                request.CapacityModifierChange,
+                request.CapacityChangeStrategy,
+                request.CapacityRoundingStrategy,
+                cancellationToken);
+
+        async Task IResourcePoolInputPort.ConsumeResourceAsync(ConsumeResourceRequest request, CancellationToken cancellationToken)
+        {
+            var _MaxCapacity = this.GetMaxCapacity();
+            var _MinimumResource = Convert.ToInt32(!request.ShouldCriticallyConsumeResource);
+            var _MissingResource = this.m_MissingResource;
+
+            this.m_MissingResource = Math.Min(_MaxCapacity - _MinimumResource, this.m_MissingResource + request.AmountToConsume);
+
+            await this.m_OutputPort.ResourceConsumedAsync(new()
+            {
+                RemainingResource = this.GetRemainingResource(),
+                ResourceConsumed = this.m_MissingResource - _MissingResource,
+                ResourceID = this.GetResourceID()
+            }, cancellationToken);
+
+            if (this.m_MissingResource >= _MaxCapacity)
+                await this.m_ResourcePoolExhaustedAsync(cancellationToken);
+        }
+
+        Task IResourcePoolInputPort.RestoreResourceAsync(RestoreResourceRequest request, CancellationToken cancellationToken)
+        {
+            var _MissingResource = this.m_MissingResource;
+
+            this.m_MissingResource = Math.Max(0, this.m_MissingResource - request.AmountToRestore);
+
+            return this.m_OutputPort.ResourceRestoredAsync(new()
+            {
+                RemainingResource = this.GetRemainingResource(),
+                ResourceID = this.GetResourceID(),
+                ResourceRestored = _MissingResource - this.m_MissingResource
+            }, cancellationToken);
+        }
+
+        async Task UpdateResourceCapacityAsync(
+            decimal baseChange,
+            decimal modifierChange,
+            ResourceCapacityChangeStrategy resourceCapacityChangeStrategy,
+            DecimalRoundingStrategy resourceRoundingStrategy,
+            CancellationToken cancellationToken)
+        {
+            var _OldMaxCapacity = this.GetMaxCapacity();
+            var _OldRemainingResource = this.GetRemainingResource();
+
+            this.m_Capacity += baseChange;
+            this.m_CapacityModifier += modifierChange;
+
+            var _NewMaxCapacity = this.GetMaxCapacity();
+            var _NewRemainingResource = resourceRoundingStrategy(resourceCapacityChangeStrategy(_OldMaxCapacity, _OldRemainingResource, _NewMaxCapacity));
+
+            this.m_MissingResource = _NewMaxCapacity - _NewRemainingResource;
+
+            await this.m_OutputPort.CapacityChangedAsync(new()
+            {
+                MaxCapacity = _NewMaxCapacity,
+                RemainingResource = _NewRemainingResource,
+                ResourceID = this.GetResourceID()
+            }, cancellationToken);
+
+            if (this.m_MissingResource >= _NewMaxCapacity)
+                await this.m_ResourcePoolExhaustedAsync(cancellationToken);
+        }
+
+        #endregion Methods
+
+    }
+
+}
