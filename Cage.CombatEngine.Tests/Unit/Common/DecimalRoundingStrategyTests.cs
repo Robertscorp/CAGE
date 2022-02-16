@@ -44,6 +44,24 @@ namespace Cage.CombatEngine.Tests.Unit.Common
 
         #endregion AlwaysRoundUp Tests
 
+        #region - - - - - - DontRound Tests - - - - - -
+
+        [Theory]
+        [InlineData(0.0001D, 0.0001D)]
+        [InlineData(0.4999D, 0.4999D)]
+        [InlineData(0.5000D, 0.5000D)]
+        [InlineData(0.5001D, 0.5001D)]
+        [InlineData(0.9999D, 0.9999D)]
+        [InlineData(-0.0001D, -0.0001D)]
+        [InlineData(-0.4999D, -0.4999D)]
+        [InlineData(-0.5000D, -0.5000D)]
+        [InlineData(-0.5001D, -0.5001D)]
+        [InlineData(-0.9999D, -0.9999D)]
+        public void DontRound_VariousNumbers_NeverRounds(double @double, double expected)
+            => DecimalRoundingStrategies.DontRound((decimal)@double).Should().Be((decimal)expected);
+
+        #endregion DontRound Tests
+
         #region - - - - - - HalfRoundDown Tests - - - - - -
 
         [Theory]
