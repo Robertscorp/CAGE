@@ -49,9 +49,9 @@ namespace Cage.CombatEngine
 
         #region - - - - - - Properties - - - - - -
 
-        public decimal CapacityModifierChange { get; set; }
-
         public ResourceCapacityChangeStrategy CapacityChangeStrategy { get; set; }
+
+        public decimal CapacityModifierChange { get; set; }
 
         public DecimalRoundingStrategy CapacityRoundingStrategy { get; set; }
 
@@ -69,8 +69,6 @@ namespace Cage.CombatEngine
         public decimal AmountToConsume { get; set; }
 
         public bool ShouldCriticallyConsumeResource { get; set; }
-
-        public bool ShouldIgnoreConsumeModifier { get; set; }
 
         #endregion Properties
 
