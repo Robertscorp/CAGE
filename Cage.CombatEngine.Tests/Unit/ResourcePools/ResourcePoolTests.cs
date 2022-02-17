@@ -16,6 +16,7 @@ namespace Cage.CombatEngine.Tests.Unit.ResourcePools
         private readonly Mock<DecimalRoundingStrategy> m_MockRoundingStrategy = new();
         private readonly Mock<ResourcePoolExhaustedAsync> m_MockPoolExhausted = new();
         private readonly Mock<ResourcePoolNoLongerExhaustedAsync> m_MockPoolNoLongerExhausted = new();
+        private readonly Mock<TimeElapsedAsync> m_MockTimeElapsed = new();
         private readonly Mock<IResourcePoolOutputPort> m_MockPresenter = new();
 
         private readonly ResourceID m_ID = new();
@@ -35,7 +36,8 @@ namespace Cage.CombatEngine.Tests.Unit.ResourcePools
                     minimumCapacity: 25.0M,
                     this.m_MockPresenter.Object,
                     this.m_MockPoolExhausted.Object,
-                    this.m_MockPoolNoLongerExhausted.Object);
+                    this.m_MockPoolNoLongerExhausted.Object,
+                    this.m_MockTimeElapsed.Object);
 
             _ = this.m_MockCapacityChangeStrategy
                     .Setup(mock => mock(It.IsAny<decimal>(), It.IsAny<decimal>(), It.IsAny<decimal>()))
@@ -261,6 +263,22 @@ namespace Cage.CombatEngine.Tests.Unit.ResourcePools
         }
 
         #endregion RestoreResourceAsync Tests
+
+        #region - - - - - - TimeElapsedAsync Tests - - - - - -
+
+        [Fact]
+        public async Task TimeElapsedAsync_TimeElapsed_InvokesTimeElapsed()
+        {
+            // Arrange
+
+            // Act
+            await this.m_ResourcePool.TimeElapsedAsync(default);
+
+            // Assert
+            this.m_MockTimeElapsed.Verify(mock => mock(default), Times.Once());
+        }
+
+        #endregion TimeElapsedAsync Tests
 
     }
 

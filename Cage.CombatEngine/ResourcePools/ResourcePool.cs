@@ -17,6 +17,7 @@ namespace Cage.CombatEngine.ResourcePools
         private readonly IResourcePoolOutputPort m_OutputPort;
         private readonly ResourcePoolExhaustedAsync m_ResourcePoolExhaustedAsync;
         private readonly ResourcePoolNoLongerExhaustedAsync m_ResourcePoolNoLongerExhaustedAsync;
+        private readonly TimeElapsedAsync m_TimeElapsedAsync;
 
         private decimal m_Capacity;
         private decimal m_CapacityModifier = 1.0M;
@@ -33,7 +34,8 @@ namespace Cage.CombatEngine.ResourcePools
             decimal minimumCapacity,
             IResourcePoolOutputPort outputPort,
             ResourcePoolExhaustedAsync resourcePoolExhaustedAsync,
-            ResourcePoolNoLongerExhaustedAsync resourcePoolNoLongerExhaustedAsync)
+            ResourcePoolNoLongerExhaustedAsync resourcePoolNoLongerExhaustedAsync,
+            TimeElapsedAsync timeElapsedAsync)
         {
             this.m_Capacity = capacity;
             this.m_ID = id;
@@ -42,6 +44,7 @@ namespace Cage.CombatEngine.ResourcePools
             this.m_OutputPort = outputPort;
             this.m_ResourcePoolExhaustedAsync = resourcePoolExhaustedAsync;
             this.m_ResourcePoolNoLongerExhaustedAsync = resourcePoolNoLongerExhaustedAsync;
+            this.m_TimeElapsedAsync = timeElapsedAsync;
         }
 
         #endregion Constructors
@@ -147,6 +150,9 @@ namespace Cage.CombatEngine.ResourcePools
             if (this.m_MissingResource >= _NewMaxCapacity)
                 await this.m_ResourcePoolExhaustedAsync(cancellationToken).ConfigureAwait(false);
         }
+
+        Task IResourcePoolInputPort.TimeElapsedAsync(CancellationToken cancellationToken)
+            => this.m_TimeElapsedAsync(cancellationToken);
 
         #endregion Methods
 
