@@ -36,8 +36,6 @@ namespace Cage.CombatEngine
 
         public ResourceCapacityChangeStrategy CapacityChangeStrategy { get; set; }
 
-        public DecimalRoundingStrategy CapcityRoundingStrategy { get; set; }
-
         public DecimalRoundingStrategy RemainingResourceRoundingStrategy { get; set; }
 
         #endregion Properties
@@ -52,8 +50,6 @@ namespace Cage.CombatEngine
         public ResourceCapacityChangeStrategy CapacityChangeStrategy { get; set; }
 
         public decimal CapacityModifierChange { get; set; }
-
-        public DecimalRoundingStrategy CapacityRoundingStrategy { get; set; }
 
         public DecimalRoundingStrategy RemainingResourceRoundingStrategy { get; set; }
 

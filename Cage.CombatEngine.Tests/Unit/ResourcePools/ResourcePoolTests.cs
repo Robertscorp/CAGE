@@ -13,7 +13,7 @@ namespace Cage.CombatEngine.Tests.Unit.ResourcePools
         #region - - - - - - Fields - - - - - -
 
         private readonly Mock<ResourceCapacityChangeStrategy> m_MockCapacityChangeStrategy = new();
-        private readonly Mock<DecimalRoundingStrategy> m_MockCapacityRoundingStrategy = new();
+        private readonly Mock<DecimalRoundingStrategy> m_MockRoundingStrategy = new();
         private readonly Mock<ResourcePoolExhaustedAsync> m_MockPoolExhausted = new();
         private readonly Mock<ResourcePoolNoLongerExhaustedAsync> m_MockPoolNoLongerExhausted = new();
         private readonly Mock<IResourcePoolOutputPort> m_MockPresenter = new();
@@ -41,7 +41,7 @@ namespace Cage.CombatEngine.Tests.Unit.ResourcePools
                     .Setup(mock => mock(It.IsAny<decimal>(), It.IsAny<decimal>(), It.IsAny<decimal>()))
                     .Returns(1);
 
-            _ = this.m_MockCapacityRoundingStrategy
+            _ = this.m_MockRoundingStrategy
                     .Setup(mock => mock(It.IsAny<decimal>()))
                     .Returns((decimal d) => d);
         }
@@ -71,7 +71,7 @@ namespace Cage.CombatEngine.Tests.Unit.ResourcePools
             {
                 BaseCapacityChange = (decimal)change,
                 CapacityChangeStrategy = this.m_MockCapacityChangeStrategy.Object,
-                CapcityRoundingStrategy = this.m_MockCapacityRoundingStrategy.Object,
+                RemainingResourceRoundingStrategy = this.m_MockRoundingStrategy.Object,
             }, default);
 
             // Assert
@@ -101,14 +101,14 @@ namespace Cage.CombatEngine.Tests.Unit.ResourcePools
             {
                 BaseCapacityChange = -150.0M,
                 CapacityChangeStrategy = this.m_MockCapacityChangeStrategy.Object,
-                CapcityRoundingStrategy = this.m_MockCapacityRoundingStrategy.Object,
+                RemainingResourceRoundingStrategy = this.m_MockRoundingStrategy.Object,
             }, default);
 
             await this.m_ResourcePool.ChangeBaseCapacityAsync(new()
             {
                 BaseCapacityChange = 150.0M,
                 CapacityChangeStrategy = this.m_MockCapacityChangeStrategy.Object,
-                CapcityRoundingStrategy = this.m_MockCapacityRoundingStrategy.Object,
+                RemainingResourceRoundingStrategy = this.m_MockRoundingStrategy.Object,
             }, default);
 
             // Assert
@@ -129,7 +129,7 @@ namespace Cage.CombatEngine.Tests.Unit.ResourcePools
             {
                 BaseCapacityChange = -150.0M,
                 CapacityChangeStrategy = this.m_MockCapacityChangeStrategy.Object,
-                CapcityRoundingStrategy = this.m_MockCapacityRoundingStrategy.Object,
+                RemainingResourceRoundingStrategy = this.m_MockRoundingStrategy.Object,
             }, default);
 
             // Assert

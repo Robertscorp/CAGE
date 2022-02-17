@@ -71,7 +71,7 @@ namespace Cage.CombatEngine.ResourcePools
                 request.BaseCapacityChange,
                 modifierChange: 0.0M,
                 request.CapacityChangeStrategy,
-                request.CapcityRoundingStrategy,
+                request.RemainingResourceRoundingStrategy,
                 cancellationToken);
 
         Task IResourcePoolInputPort.ChangeCapacityModifierAsync(ChangeCapacityModifierRequest request, CancellationToken cancellationToken)
@@ -79,7 +79,7 @@ namespace Cage.CombatEngine.ResourcePools
                 baseChange: 0.0M,
                 request.CapacityModifierChange,
                 request.CapacityChangeStrategy,
-                request.CapacityRoundingStrategy,
+                request.RemainingResourceRoundingStrategy,
                 cancellationToken);
 
         async Task IResourcePoolInputPort.ConsumeResourceAsync(ConsumeResourceRequest request, CancellationToken cancellationToken)
