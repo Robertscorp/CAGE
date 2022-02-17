@@ -15,6 +15,7 @@ namespace Cage.CombatEngine.Tests.Unit.ResourcePools
         private readonly Mock<ResourceCapacityChangeStrategy> m_MockCapacityChangeStrategy = new();
         private readonly Mock<DecimalRoundingStrategy> m_MockCapacityRoundingStrategy = new();
         private readonly Mock<ResourcePoolExhaustedAsync> m_MockPoolExhausted = new();
+        private readonly Mock<ResourcePoolNoLongerExhaustedAsync> m_MockPoolNoLongerExhausted = new();
         private readonly Mock<IResourcePoolOutputPort> m_MockPresenter = new();
 
         private readonly ResourceID m_ID = new();
@@ -33,7 +34,8 @@ namespace Cage.CombatEngine.Tests.Unit.ResourcePools
                     initialResource: 50.0M,
                     minimumCapacity: 25.0M,
                     this.m_MockPresenter.Object,
-                    this.m_MockPoolExhausted.Object);
+                    this.m_MockPoolExhausted.Object,
+                    this.m_MockPoolNoLongerExhausted.Object);
 
             _ = this.m_MockCapacityChangeStrategy
                     .Setup(mock => mock(It.IsAny<decimal>(), It.IsAny<decimal>(), It.IsAny<decimal>()))
@@ -230,6 +232,32 @@ namespace Cage.CombatEngine.Tests.Unit.ResourcePools
 
             // Assert
             this.m_MockPresenter.Verify(mock => mock.ResourceRestoredAsync(_Expected, default));
+        }
+
+        [Fact]
+        public async Task RestoreResourceAsync_RestoreExhaustedResourcePool_InvokesResourcePoolNoLongerExhausted()
+        {
+            // Arrange
+
+            // Act
+            await this.m_ResourcePool.ConsumeResourceAsync(new()
+            {
+                AmountToConsume = 50.0M,
+                ShouldCriticallyConsumeResource = true
+            }, default);
+
+            await this.m_ResourcePool.RestoreResourceAsync(new()
+            {
+                AmountToRestore = 0.01M
+            }, default);
+
+            await this.m_ResourcePool.RestoreResourceAsync(new()
+            {
+                AmountToRestore = 0.01M
+            }, default);
+
+            // Assert
+            this.m_MockPoolNoLongerExhausted.Verify(mock => mock(default), Times.Once());
         }
 
         #endregion RestoreResourceAsync Tests
