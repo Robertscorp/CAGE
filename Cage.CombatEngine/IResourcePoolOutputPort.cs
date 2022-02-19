@@ -21,9 +21,13 @@
 
         #region - - - - - - Properties - - - - - -
 
-        public decimal MaxCapacity { get; set; }
+        public decimal Capacity { get; set; }
+
+        public decimal CapacityChange { get; set; }
 
         public decimal RemainingResource { get; set; }
+
+        public decimal RemainingResourceChange { get; set; }
 
         public ResourceID ResourceID { get; set; }
 

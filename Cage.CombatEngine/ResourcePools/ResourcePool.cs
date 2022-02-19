@@ -3,10 +3,6 @@
 namespace Cage.CombatEngine.ResourcePools
 {
 
-    public delegate Task ResourcePoolExhaustedAsync(CancellationToken cancellationToken);
-
-    public delegate Task ResourcePoolNoLongerExhaustedAsync(CancellationToken cancellationToken);
-
     public class ResourcePool : IResourcePoolInputPort
     {
 
@@ -15,8 +11,6 @@ namespace Cage.CombatEngine.ResourcePools
         private readonly ResourceID m_ID;
         private readonly decimal m_MinimumCapacity;
         private readonly IResourcePoolOutputPort m_OutputPort;
-        private readonly ResourcePoolExhaustedAsync m_ResourcePoolExhaustedAsync;
-        private readonly ResourcePoolNoLongerExhaustedAsync m_ResourcePoolNoLongerExhaustedAsync;
         private readonly TimeElapsedAsync m_TimeElapsedAsync;
 
         private decimal m_Capacity;
@@ -33,8 +27,6 @@ namespace Cage.CombatEngine.ResourcePools
             decimal initialResource,
             decimal minimumCapacity,
             IResourcePoolOutputPort outputPort,
-            ResourcePoolExhaustedAsync resourcePoolExhaustedAsync,
-            ResourcePoolNoLongerExhaustedAsync resourcePoolNoLongerExhaustedAsync,
             TimeElapsedAsync timeElapsedAsync)
         {
             this.m_Capacity = capacity;
@@ -42,8 +34,6 @@ namespace Cage.CombatEngine.ResourcePools
             this.m_MinimumCapacity = minimumCapacity;
             this.m_MissingResource = capacity - initialResource;
             this.m_OutputPort = outputPort;
-            this.m_ResourcePoolExhaustedAsync = resourcePoolExhaustedAsync;
-            this.m_ResourcePoolNoLongerExhaustedAsync = resourcePoolNoLongerExhaustedAsync;
             this.m_TimeElapsedAsync = timeElapsedAsync;
         }
 
@@ -85,7 +75,7 @@ namespace Cage.CombatEngine.ResourcePools
                 request.RemainingResourceRoundingStrategy,
                 cancellationToken);
 
-        async Task IResourcePoolInputPort.ConsumeResourceAsync(ConsumeResourceRequest request, CancellationToken cancellationToken)
+        Task IResourcePoolInputPort.ConsumeResourceAsync(ConsumeResourceRequest request, CancellationToken cancellationToken)
         {
             var _MaxCapacity = this.GetMaxCapacity();
             var _MinimumResource = Convert.ToInt32(!request.ShouldCriticallyConsumeResource);
@@ -93,36 +83,29 @@ namespace Cage.CombatEngine.ResourcePools
 
             this.m_MissingResource = Math.Min(_MaxCapacity - _MinimumResource, this.m_MissingResource + request.AmountToConsume);
 
-            await this.m_OutputPort.ResourceConsumedAsync(new()
+            return this.m_OutputPort.ResourceConsumedAsync(new()
             {
                 RemainingResource = this.GetRemainingResource(),
                 ResourceConsumed = this.m_MissingResource - _MissingResource,
                 ResourceID = this.GetResourceID()
-            }, cancellationToken).ConfigureAwait(false);
-
-            if (this.m_MissingResource >= _MaxCapacity)
-                await this.m_ResourcePoolExhaustedAsync(cancellationToken).ConfigureAwait(false);
+            }, cancellationToken);
         }
 
-        async Task IResourcePoolInputPort.RestoreResourceAsync(RestoreResourceRequest request, CancellationToken cancellationToken)
+        Task IResourcePoolInputPort.RestoreResourceAsync(RestoreResourceRequest request, CancellationToken cancellationToken)
         {
-            var _MaxCapacity = this.GetMaxCapacity();
             var _MissingResource = this.m_MissingResource;
 
             this.m_MissingResource = Math.Max(0, this.m_MissingResource - request.AmountToRestore);
 
-            await this.m_OutputPort.ResourceRestoredAsync(new()
+            return this.m_OutputPort.ResourceRestoredAsync(new()
             {
                 RemainingResource = this.GetRemainingResource(),
                 ResourceID = this.GetResourceID(),
                 ResourceRestored = _MissingResource - this.m_MissingResource
-            }, cancellationToken).ConfigureAwait(false);
-
-            if (_MissingResource >= _MaxCapacity && this.m_MissingResource < _MaxCapacity)
-                await this.m_ResourcePoolNoLongerExhaustedAsync(cancellationToken).ConfigureAwait(false);
+            }, cancellationToken);
         }
 
-        async Task UpdateResourceCapacityAsync(
+        Task UpdateResourceCapacityAsync(
             decimal baseChange,
             decimal modifierChange,
             ResourceCapacityChangeStrategy resourceCapacityChangeStrategy,
@@ -140,15 +123,14 @@ namespace Cage.CombatEngine.ResourcePools
 
             this.m_MissingResource = _NewMaxCapacity - _NewRemainingResource;
 
-            await this.m_OutputPort.CapacityChangedAsync(new()
+            return this.m_OutputPort.CapacityChangedAsync(new()
             {
-                MaxCapacity = _NewMaxCapacity,
+                Capacity = _NewMaxCapacity,
+                CapacityChange = _NewMaxCapacity - _OldMaxCapacity,
                 RemainingResource = _NewRemainingResource,
+                RemainingResourceChange = _NewRemainingResource - _OldRemainingResource,
                 ResourceID = this.GetResourceID()
-            }, cancellationToken).ConfigureAwait(false);
-
-            if (this.m_MissingResource >= _NewMaxCapacity)
-                await this.m_ResourcePoolExhaustedAsync(cancellationToken).ConfigureAwait(false);
+            }, cancellationToken);
         }
 
         Task IResourcePoolInputPort.TimeElapsedAsync(CancellationToken cancellationToken)

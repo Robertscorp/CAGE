@@ -23,6 +23,8 @@ namespace Cage.CombatEngine
 
         Task RestoreResourceAsync(RestoreResourceRequest request, CancellationToken cancellationToken);
 
+        Task TimeElapsedAsync(CancellationToken cancellationToken);
+
         #endregion Methods
 
     }

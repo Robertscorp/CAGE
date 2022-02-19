@@ -14,8 +14,6 @@ namespace Cage.CombatEngine.Tests.Unit.ResourcePools
 
         private readonly Mock<ResourceCapacityChangeStrategy> m_MockCapacityChangeStrategy = new();
         private readonly Mock<DecimalRoundingStrategy> m_MockRoundingStrategy = new();
-        private readonly Mock<ResourcePoolExhaustedAsync> m_MockPoolExhausted = new();
-        private readonly Mock<ResourcePoolNoLongerExhaustedAsync> m_MockPoolNoLongerExhausted = new();
         private readonly Mock<TimeElapsedAsync> m_MockTimeElapsed = new();
         private readonly Mock<IResourcePoolOutputPort> m_MockPresenter = new();
 
@@ -35,8 +33,6 @@ namespace Cage.CombatEngine.Tests.Unit.ResourcePools
                     initialResource: 50.0M,
                     minimumCapacity: 25.0M,
                     this.m_MockPresenter.Object,
-                    this.m_MockPoolExhausted.Object,
-                    this.m_MockPoolNoLongerExhausted.Object,
                     this.m_MockTimeElapsed.Object);
 
             _ = this.m_MockCapacityChangeStrategy
@@ -63,7 +59,7 @@ namespace Cage.CombatEngine.Tests.Unit.ResourcePools
             // Arrange
             var _Expected = new CapacityChangedResponse
             {
-                MaxCapacity = (decimal)expected,
+                Capacity = (decimal)expected,
                 RemainingResource = 1.0M,
                 ResourceID = this.m_ID
             };
@@ -86,14 +82,14 @@ namespace Cage.CombatEngine.Tests.Unit.ResourcePools
             // Arrange
             var _ExpectedFromDecrease = new CapacityChangedResponse
             {
-                MaxCapacity = 25.0M,
+                Capacity = 25.0M,
                 RemainingResource = 1.0M,
                 ResourceID = this.m_ID
             };
 
             var _ExpectedFromIncrease = new CapacityChangedResponse
             {
-                MaxCapacity = 100.0M,
+                Capacity = 100.0M,
                 RemainingResource = 1.0M,
                 ResourceID = this.m_ID
             };
@@ -116,26 +112,6 @@ namespace Cage.CombatEngine.Tests.Unit.ResourcePools
             // Assert
             this.m_MockPresenter.Verify(mock => mock.CapacityChangedAsync(_ExpectedFromDecrease, default));
             this.m_MockPresenter.Verify(mock => mock.CapacityChangedAsync(_ExpectedFromIncrease, default));
-        }
-
-        [Fact]
-        public async Task ChangeBaseCapacityAsync_RemainingResourceDropsToZero_InvokesResourcePoolExhausted()
-        {
-            // Arrange
-            _ = this.m_MockCapacityChangeStrategy
-                    .Setup(mock => mock(It.IsAny<decimal>(), It.IsAny<decimal>(), It.IsAny<decimal>()))
-                    .Returns(-25.0M);
-
-            // Act
-            await this.m_ResourcePool.ChangeBaseCapacityAsync(new()
-            {
-                BaseCapacityChange = -150.0M,
-                CapacityChangeStrategy = this.m_MockCapacityChangeStrategy.Object,
-                RemainingResourceRoundingStrategy = this.m_MockRoundingStrategy.Object,
-            }, default);
-
-            // Assert
-            this.m_MockPoolExhausted.Verify(mock => mock(default));
         }
 
         #endregion ChangeBaseCapacityAsync Tests
@@ -173,38 +149,6 @@ namespace Cage.CombatEngine.Tests.Unit.ResourcePools
             this.m_MockPresenter.Verify(mock => mock.ResourceConsumedAsync(_Expected, default));
         }
 
-        [Fact]
-        public async Task ConsumeResourceAsync_DoesNotExhaustResource_DoesNotInvokeResourcePoolExhausted()
-        {
-            // Arrange
-
-            // Act
-            await this.m_ResourcePool.ConsumeResourceAsync(new()
-            {
-                AmountToConsume = 25.0M,
-                ShouldCriticallyConsumeResource = true
-            }, default);
-
-            // Assert
-            this.m_MockPoolExhausted.Verify(mock => mock(default), Times.Never());
-        }
-
-        [Fact]
-        public async Task ConsumeResourceAsync_ExhaustResource_InvokesResourcePoolExhausted()
-        {
-            // Arrange
-
-            // Act
-            await this.m_ResourcePool.ConsumeResourceAsync(new()
-            {
-                AmountToConsume = 50.0M,
-                ShouldCriticallyConsumeResource = true
-            }, default);
-
-            // Assert
-            this.m_MockPoolExhausted.Verify(mock => mock(default), Times.Once());
-        }
-
         #endregion ConsumeResourceAsync Tests
 
         #region - - - - - - RestoreResourceAsync Tests - - - - - -
@@ -234,32 +178,6 @@ namespace Cage.CombatEngine.Tests.Unit.ResourcePools
 
             // Assert
             this.m_MockPresenter.Verify(mock => mock.ResourceRestoredAsync(_Expected, default));
-        }
-
-        [Fact]
-        public async Task RestoreResourceAsync_RestoreExhaustedResourcePool_InvokesResourcePoolNoLongerExhausted()
-        {
-            // Arrange
-
-            // Act
-            await this.m_ResourcePool.ConsumeResourceAsync(new()
-            {
-                AmountToConsume = 50.0M,
-                ShouldCriticallyConsumeResource = true
-            }, default);
-
-            await this.m_ResourcePool.RestoreResourceAsync(new()
-            {
-                AmountToRestore = 0.01M
-            }, default);
-
-            await this.m_ResourcePool.RestoreResourceAsync(new()
-            {
-                AmountToRestore = 0.01M
-            }, default);
-
-            // Assert
-            this.m_MockPoolNoLongerExhausted.Verify(mock => mock(default), Times.Once());
         }
 
         #endregion RestoreResourceAsync Tests
