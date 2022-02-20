@@ -119,14 +119,14 @@ namespace Cage.CombatEngine.Tests.Unit.ResourcePools
         #region - - - - - - ConsumeResourceAsync Tests - - - - - -
 
         [Theory]
-        [InlineData(25.0D, false, 25.0D, 25.0D)]
-        [InlineData(50.0D, false, 49.0D, 1.0D)]
-        [InlineData(100.0D, false, 49.0D, 1.0D)]
-        [InlineData(50.0D, true, 50.0D, 0.0D)]
-        [InlineData(100.0D, true, 50.0D, 0.0D)]
+        [InlineData(false, 25.0D, 25.0D, 25.0D)]
+        [InlineData(false, 50.0D, 49.0D, 1.0D)]
+        [InlineData(false, 100.0D, 49.0D, 1.0D)]
+        [InlineData(true, 50.0D, 50.0D, 0.0D)]
+        [InlineData(true, 100.0D, 50.0D, 0.0D)]
         public async Task ConsumeResourceAsync_ConsumeResource_ConsumesCorrectAmount(
+            bool canExhaustResourcePool,
             double consumeAmount,
-            bool canCriticallyConsume,
             double expectedToConsume,
             double expectedRemaining)
         {
@@ -142,7 +142,7 @@ namespace Cage.CombatEngine.Tests.Unit.ResourcePools
             await this.m_ResourcePool.ConsumeResourceAsync(new()
             {
                 AmountToConsume = (decimal)consumeAmount,
-                ShouldCriticallyConsumeResource = canCriticallyConsume
+                CanExhaustResourcePool = canExhaustResourcePool
             }, default);
 
             // Assert

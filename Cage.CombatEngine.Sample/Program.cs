@@ -74,7 +74,7 @@ bool TryGetConsumeResourceRequest(out ConsumeResourceRequest request)
     request = new()
     {
         AmountToConsume = 10,
-        ShouldCriticallyConsumeResource = true
+        CanExhaustResourcePool = true
     };
 
     return true;

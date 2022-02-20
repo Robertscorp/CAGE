@@ -66,7 +66,7 @@ namespace Cage.CombatEngine
 
         public decimal AmountToConsume { get; set; }
 
-        public bool ShouldCriticallyConsumeResource { get; set; }
+        public bool CanExhaustResourcePool { get; set; }
 
         #endregion Properties
 

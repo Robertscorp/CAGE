@@ -78,7 +78,7 @@ namespace Cage.CombatEngine.ResourcePools
         Task IResourcePoolInputPort.ConsumeResourceAsync(ConsumeResourceRequest request, CancellationToken cancellationToken)
         {
             var _MaxCapacity = this.GetMaxCapacity();
-            var _MinimumResource = Convert.ToInt32(!request.ShouldCriticallyConsumeResource);
+            var _MinimumResource = Convert.ToInt32(!request.CanExhaustResourcePool);
             var _MissingResource = this.m_MissingResource;
 
             this.m_MissingResource = Math.Min(_MaxCapacity - _MinimumResource, this.m_MissingResource + request.AmountToConsume);
