@@ -63,7 +63,7 @@ namespace Cage.CombatEngine.Sample.Resources
 
         public static readonly IResourcePoolOutputPort ComboPointsPresenter = new ResourcePoolPresenter(ResourcePoolViewModels.ComboPointsPool);
         public static readonly IResourcePoolOutputPort EnergyPresenter = new ResourcePoolPresenter(ResourcePoolViewModels.EnergyPool);
-        public static readonly IResourcePoolOutputPort HealthPoolPresenter = new ResourcePoolExhaustionFacade(
+        public static readonly IResourcePoolOutputPort HealthPoolPresenter = new ResourcePoolExhaustionDecorator(
             new ResourcePoolPresenter(ResourcePoolViewModels.HealthPool),
             new(c => { ConsoleManager.Instance.DisplayResult("Unit should become critically wounded."); return Task.CompletedTask; }),
             new(c => { ConsoleManager.Instance.DisplayResult("Unit should recover from critical wounds."); return Task.CompletedTask; }));

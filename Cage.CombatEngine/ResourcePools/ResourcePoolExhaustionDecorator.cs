@@ -5,7 +5,7 @@
 
     public delegate Task ResourcePoolNoLongerExhaustedAsync(CancellationToken cancellationToken);
 
-    public class ResourcePoolExhaustionFacade : IResourcePoolOutputPort
+    public class ResourcePoolExhaustionDecorator : IResourcePoolOutputPort
     {
 
         #region - - - - - - Fields - - - - - -
@@ -18,7 +18,7 @@
 
         #region - - - - - - Constructors - - - - - -
 
-        public ResourcePoolExhaustionFacade(
+        public ResourcePoolExhaustionDecorator(
             IResourcePoolOutputPort outputPort,
             ResourcePoolExhaustedAsync resourcePoolExhaustedAsync,
             ResourcePoolNoLongerExhaustedAsync resourcePoolNoLongerExhaustedAsync)

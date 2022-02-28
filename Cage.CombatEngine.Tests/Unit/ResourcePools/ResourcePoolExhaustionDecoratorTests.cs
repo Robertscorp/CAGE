@@ -6,7 +6,7 @@ using Xunit;
 namespace Cage.CombatEngine.Tests.Unit.ResourcePools
 {
 
-    public class ResourcePoolExhaustionFacadeTests
+    public class ResourcePoolExhaustionDecoratorTests
     {
 
         #region - - - - - - Fields - - - - - -
@@ -21,8 +21,8 @@ namespace Cage.CombatEngine.Tests.Unit.ResourcePools
 
         #region - - - - - - Constructors - - - - - -
 
-        public ResourcePoolExhaustionFacadeTests()
-            => this.m_OutputPort = new ResourcePoolExhaustionFacade(
+        public ResourcePoolExhaustionDecoratorTests()
+            => this.m_OutputPort = new ResourcePoolExhaustionDecorator(
                 this.m_MockOutputPort.Object,
                 this.m_MockPoolExhausted.Object,
                 this.m_MockPoolNoLongerExhausted.Object);
